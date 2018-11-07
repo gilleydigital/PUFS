@@ -1,0 +1,34 @@
+<html>
+	<head>
+		<title>PUFS Test</title>
+		<script src="/pufs/jquery.js"></script>
+		<script src="/pufs/pufs.js"></script>
+		<script src="/pufs/controller.js"></script>
+		<link rel="stylesheet" type="text/css" href="/pufs/style.css">
+	</head>
+	<body>
+		<ul data-filter="test" id="filter">
+			<li data-filter="unfiltered">All</li>
+			<li data-filter="animals">Only Animals</li>
+			<li data-filter="vegetables">Only Vegetables</li>
+			<li data-filter="minerals">Only Minerals</li>
+		</ul>
+		
+		<div id="holder">
+			<ul id="list">
+				<li data-filter="animals">Duck</li>
+				<li data-filter="vegetables">Lettuce</li>
+				<li data-filter="minerals">Pegmatite</li>
+				<li data-filter="animals">Dog</li>
+				<li data-filter="vegetables">Carrot</li>
+				<li data-filter="minerals">Salt</li>
+				<li data-filter="animals">Rabbit</li>
+				<li data-filter="vegetables">Tomato</li>
+				<li data-filter="minerals">Iron</li>
+				<li data-filter="animals">Horse</li>
+				<li data-filter="vegetables">Onion</li>
+				<li data-filter="minerals">Zinc</li>
+			</ul>
+		</div>
+	</body>
+</html>
