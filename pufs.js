@@ -6,10 +6,13 @@
 			paging_text: 'Read More',
 			paging_html: '<div class="pufs-paging"></div>',
 			page_length: 6,
+			next_prev: false,
+			next_text: 'Next',
+			prev_text: 'Previous',			
 			filter: false,
 			selector: 'li'
 		}, options );
-				
+		
 		// Target is always the list, for sub-functions
 		var target = this;
 		// Number of child elements
@@ -87,31 +90,47 @@
 			
 			// Calculate the number of pages
 			var num_pages = Math.ceil(target_length / settings.page_length);
+			this.data('num_pages', num_pages);
 
 			// Create the pagination element
 			var pagination = $(settings.paging_html)
 				.attr('id', 'pufs-pagination');
 			
+			if (settings.next_prev === true) {
+				pagination.append('<li style="display: none;" id="pufs-prev">' + settings.prev_text + '</li>');
+			}
+			
 			// Add the list elements
 			for (var i = 1; i <= num_pages; i++) {
-				pagination.append('<li>' + i + '</li>');
+				pagination.append('<li class="pufs-page-number" data-pufs-page-number="' + i + '">' + i + '</li>');
+			}
+
+			if (settings.next_prev === true) {
+				pagination.append('<li style="display: none;" id="pufs-next">' + settings.next_text + '</li>');
 			}
 			
 			// Create the pagination
 			target.after(pagination);
 			
-			$('#pufs-pagination').delegate('li', 'click', function()
+			if (target.data('num_pages') >= 1) {
+				$('#pufs-next').fadeIn();
+			}
+			
+			// User clicks page number
+			$('#pufs-pagination').delegate('.pufs-page-number', 'click', function()
 			{
+				// Set the target page
+				var target_page = $(this).data('pufs-page-number');
+				
 				// Active class for styling
-				$('#pufs-pagination li').removeClass('active');
-				$(this).addClass('active');
+				$('#pufs-pagination .pufs-page-number').removeClass('active');
+				$('#pufs-pagination .pufs-page-number[data-pufs-page-number="'+ target_page +'"]').addClass('active');
 				
-				// Fade in the right page
-				var target_page = $(this).index() + 1;
-				
+				// Hide all the list elements
 				target.children()
 					.hide();
-					
+				
+				// Fade in the target elements
 				var from = (target_page - 1) * settings.page_length;
 				var to = target_page * settings.page_length;
 				
@@ -121,7 +140,120 @@
 				
 				// Keep track of what page we're on
 				target.data('page', target_page);
+				
+				// Update next/prev buttons
+				if (settings.next_prev === true) {
+					// Next Button
+					if (target_page === target.data('num_pages')) {
+						$('#pufs-next').hide();
+					}
+					else {
+						$('#pufs-next').fadeIn();
+					}
+					
+					// Previous Button
+					if (target_page === 1) {
+						$('#pufs-prev').hide();
+					}
+					else {
+						$('#pufs-prev').fadeIn();
+					}						
+				}
 			});
+			
+			// User clicks prev
+			if (settings.next_prev === true) {
+				$('#pufs-pagination').delegate('#pufs-prev', 'click', function()
+				{
+					// Set the target page
+					var target_page = target.data('page') - 1;
+				
+					// Active class for styling
+					$('#pufs-pagination .pufs-page-number').removeClass('active');
+					$('#pufs-pagination .pufs-page-number[data-pufs-page-number="'+ target_page +'"]').addClass('active');
+				
+					// Hide all the list elements
+					target.children()
+						.hide();
+				
+					// Fade in the target elements
+					var from = (target_page - 1) * settings.page_length;
+					var to = target_page * settings.page_length;
+				
+					target.children()
+						.slice(from, to)
+						.fadeIn();
+				
+					// Keep track of what page we're on
+					target.data('page', target_page);
+					
+					// Update next/prev buttons
+					if (settings.next_prev === true) {
+						// Next Button
+						if (target_page === target.data('num_pages')) {
+							$('#pufs-next').hide();
+						}
+						else {
+							$('#pufs-next').fadeIn();
+						}
+						
+						// Previous Button
+						if (target_page === 1) {
+							$('#pufs-prev').hide();
+						}
+						else {
+							$('#pufs-prev').fadeIn();
+						}						
+					}
+				});
+			}
+			
+			// User clicks next
+			if (settings.next_prev === true) {
+				$('#pufs-pagination').delegate('#pufs-next', 'click', function()
+				{
+					// Set the target page
+					var target_page = target.data('page') + 1;
+				
+					// Active class for styling
+					$('#pufs-pagination .pufs-page-number').removeClass('active');
+					$('#pufs-pagination .pufs-page-number[data-pufs-page-number="'+ target_page +'"]').addClass('active');
+				
+					// Hide all the list elements
+					target.children()
+						.hide();
+				
+					// Fade in the target elements
+					var from = (target_page - 1) * settings.page_length;
+					var to = target_page * settings.page_length;
+				
+					target.children()
+						.slice(from, to)
+						.fadeIn();
+				
+					// Keep track of what page we're on
+					target.data('page', target_page);
+					
+					// Update next/prev buttons
+					if (settings.next_prev === true) {
+						// Next Button
+						if (target_page === target.data('num_pages')) {
+							$('#pufs-next').hide();
+						}
+						else {
+							$('#pufs-next').fadeIn();
+						}
+						
+						// Previous Button
+						if (target_page === 1) {
+							$('#pufs-prev').hide();
+						}
+						else {
+							$('#pufs-prev').fadeIn();
+						}						
+					}
+				});
+			}
 		}
 		
 		// Filtering
