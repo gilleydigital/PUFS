@@ -10,7 +10,9 @@
 			next_text: 'Next',
 			prev_text: 'Previous',			
 			filter: false,
-			selector: 'li'
+			selector: 'li',
+			search: false,
+			search_selector: '#pufs-search'
 		}, options );
 		
 		// Target is always the list, for sub-functions
@@ -263,7 +265,7 @@
 			var filter = $(settings.filter);
 			
 			// The filtering event
-			filter.on('click', 'li', function() {
+			filter.on('click', 'li', function() {				
 				// What are we filtering by
 				var filter_by = $(this).data('filter');
 				// Set the variable on the target
@@ -337,6 +339,97 @@
 					
 				}
 			});
+		}
+		
+		// Searching
+		if (settings.search !== false) {
+			// setup before functions
+			var typingTimer; // timer identifier
+			var doneTypingInterval = 100;  // time in ms (5 seconds)
+			var selector = settings.search_selector;
+
+			//on keyup, start the countdown
+			$(selector).keyup(function(){
+			    clearTimeout(typingTimer);
+		        typingTimer = setTimeout(doneTyping, doneTypingInterval, $(selector).val());
+			});
+
+			//user is "finished typing," do something
+			function doneTyping (val) {
+				var search = val.toLowerCase();
+
+				// Create the selector
+				var selector = settings.selector;
+
+				// Refine the selector
+				if (search !== '')
+				{
+					selector = settings.selector + '[data-search-content*="' + search + '"]';
+				}
+								
+				// Hide em all
+				target.children().hide();
+				
+				if (settings.paging === 'none')
+				{
+					target.children(selector).fadeIn();
+				}
+				
+				if (settings.paging === 'more')
+				{
+					// How much is already revealed
+					var revealed = target.data('revealed');
+					var revealed_plus = target.children(selector).slice(0, revealed).size();
+					var filtered_target_length = target.children(selector).size();
+					
+					// Keep the number of revealed lines constant, change content as needed
+					target.children(selector)
+						.slice(0, revealed)
+						.fadeIn();
+										
+					// If you have reached the end of the list...
+					if (revealed_plus >= filtered_target_length)
+					{
+						$('#pufs-read-more').hide();
+					}
+					else
+					{
+						$('#pufs-read-more').show();
+					}
+				}
+				
+				if (settings.paging === 'pagination')
+				{
+					// For paginated lists, revealed keeps track of what page we're on
+					target.data('page', 1);
+					
+					target_length = target.children(selector).length;
+
+					// Calculate the number of pages
+					var num_pages = Math.ceil(target_length / settings.page_length);
+
+					var pagination_html = '';
+
+					// Add the list elements
+					for (var i = 1; i <= num_pages; i++) {
+						pagination_html = pagination_html + '<li>' + i + '</li>';
+					}
+
+					$('#pufs-pagination').html(pagination_html);
+					
+					var from = 0;
+					var to = settings.page_length;
+
+					target.children(selector)
+						.slice(from, to)
+						.fadeIn();
+				}
+				
+				
+				
+				
+				
+			}
 		}
 		
 		return this;

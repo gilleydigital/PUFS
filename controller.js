@@ -5,7 +5,8 @@ jQuery(function($) {
 			filter: '#filter',
 			next_prev: true,
 			next_text: 'Next Page',
-			prev_text: 'Previous Page'
+			prev_text: 'Previous Page',
+			search: true
 		});
 	});
 });
